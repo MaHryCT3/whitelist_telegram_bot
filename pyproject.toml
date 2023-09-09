@@ -1,0 +1,45 @@
+[tool.poetry]
+name = "whitelist-telegram-bot"
+version = "0.1.0"
+description = ""
+authors = ["MaHryCT3 <mahryct123@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+aiogram = "^3.0.0"
+aiohttp = "^3.8.5"
+pydantic = "^2.3.0"
+pydantic-settings = "^2.0.3"
+
+
+[tool.poetry.group.dev.dependencies]
+black = "^23.9.0"
+ruff = "^0.0.287"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.ruff]
+line-length = 120
+select = ['Q', 'F', 'I', 'B', 'C4', 'TID', 'ARG', 'PLR']
+ignore = ['PLR0913']
+# ANN - https://beta.ruff.rs/docs/rules/#flake8-annotations-ann,
+# PLR0913 - Too many arguments
+
+
+[tool.ruff.per-file-ignores]
+"__init__.py" = ["F401"] # Unused import
+"tests/*" = ['ANN']  # Annotations
+"app/handlers/*" = ['ARG001']
+"app/core/custom_rules/*" = ['ARG002']
+
+[tool.ruff.flake8-quotes]
+docstring-quotes = "double"
+inline-quotes = "single"
+
+[tool.black]
+skip-string-normalization = true
+exclude = '(\.git|\.venv|\.vscode)'
+line-length = 120
