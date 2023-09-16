@@ -1,6 +1,7 @@
 from aiogram import F, Router
 from aiogram.types import Message
 from aiogram.utils.keyboard import InlineKeyboardBuilder, InlineKeyboardButton
+from aiohttp import ClientResponseError
 
 from bot.messages import (
     APPLICATION_HAVE_SEND,
@@ -8,6 +9,7 @@ from bot.messages import (
     NOT_PUT_STEAM_LINK,
     STEAMID_ALREADY_IN_USE,
     YOU_ALREADY_SEND_APPLICATION,
+    STEAM_SERVICE_IS_UNAVAILABLE
 )
 from bot.services.backend_api import BackendAPI
 from bot.services.steam_link_validator import SteamLinkValidator
@@ -26,15 +28,22 @@ async def command_steam_handler(message: Message):
     if not steam_link:
         return await message.answer(NOT_PUT_STEAM_LINK)
 
-    steam_link_validator = SteamLinkValidator()
-    steamid = await steam_link_validator.validate_steamid(steam_link)
-    if steamid is None:
-        return await message.answer(INVALID_STEAM_LINK)
-
     backend_api = BackendAPI()
     if await backend_api.user_exist(message.from_user.id):
         return await message.answer(YOU_ALREADY_SEND_APPLICATION)
-    elif await backend_api.steamid_exist(steamid):
+
+    steam_link_validator = SteamLinkValidator()
+    try:
+        steamid = await steam_link_validator.validate_steamid(steam_link)
+    except ClientResponseError as e:
+        return await message.answer(STEAM_SERVICE_IS_UNAVAILABLE)
+    except Exception:
+        return await message.answer(STEAM_SERVICE_IS_UNAVAILABLE)
+
+    if steamid is None:
+        return await message.answer(INVALID_STEAM_LINK)
+
+    if await backend_api.steamid_exist(steamid):
         return await message.answer(STEAMID_ALREADY_IN_USE)
 
     await backend_api.application_create(message.from_user.id, message.from_user.username, steamid)

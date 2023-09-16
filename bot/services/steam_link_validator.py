@@ -13,7 +13,6 @@ class SteamLinkValidator:
 
     async def validate_steamid(self, link: str) -> str | None:
         steamid = None
-        steamid_validated = False
 
         if self.is_steamid(link):
             steamid = link
@@ -22,16 +21,11 @@ class SteamLinkValidator:
         elif self.is_steam_link_with_vanity_url(link):
             custom_steamid = self.get_steamid_from_link(link)
             steamid = await self.steam_api.resolve_steam_url(custom_steamid)
-            steamid_validated = True
 
         if steamid is None:
             return None
 
-        if not steamid_validated:
-            steamid_validated = await self.steam_api.is_profile_exist(steamid)
-
-        if steamid_validated:
-            return steamid
+        return steamid
 
     def is_steam_link_with_steamid(self, link: str) -> bool:
         return self.STEAM_LINK_WITH_STEAMID in link
