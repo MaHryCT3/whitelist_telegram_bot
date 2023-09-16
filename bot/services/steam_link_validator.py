@@ -22,6 +22,9 @@ class SteamLinkValidator:
             custom_steamid = self.get_steamid_from_link(link)
             steamid = await self.steam_api.resolve_steam_url(custom_steamid)
 
+        if isinstance(steamid, str) and len(steamid) != 17:
+            return None
+
         if steamid is None:
             return None
 
