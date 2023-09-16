@@ -46,7 +46,7 @@ async def command_steam_handler(message: Message):
     if await backend_api.steamid_exist(steamid):
         return await message.answer(STEAMID_ALREADY_IN_USE)
 
-    await backend_api.application_create(message.from_user.id, message.from_user.username, steamid)
+    await backend_api.application_create(message.from_user.id, message.from_user.username or 'ПРОФИЛЬ_СКРЫТ', steamid)
     await message.answer(APPLICATION_HAVE_SEND, disable_web_page_preview=True, reply_markup=get_subscribe_inline())
 
 
