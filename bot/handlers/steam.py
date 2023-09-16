@@ -19,6 +19,7 @@ steam_router = Router()
     F.text.startswith('765611')
     | F.text.contains(SteamLinkValidator.STEAM_LINK_WITH_STEAMID)
     | F.text.contains(SteamLinkValidator.STEAM_LINK_WITH_VANITY_URL)
+    | F.text.contains('steamcommunity')
 )
 async def command_steam_handler(message: Message):
     steam_link = message.text
