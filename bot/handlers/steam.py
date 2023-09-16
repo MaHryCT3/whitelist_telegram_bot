@@ -1,5 +1,6 @@
 from aiogram import F, Router
 from aiogram.types import Message
+from aiogram.utils.keyboard import InlineKeyboardBuilder, InlineKeyboardButton
 
 from bot.messages import (
     APPLICATION_HAVE_SEND,
@@ -36,4 +37,13 @@ async def command_steam_handler(message: Message):
         return await message.answer(STEAMID_ALREADY_IN_USE)
 
     await backend_api.application_create(message.from_user.id, message.from_user.username, steamid)
-    await message.answer(APPLICATION_HAVE_SEND, disable_web_page_preview=True)
+    await message.answer(APPLICATION_HAVE_SEND, disable_web_page_preview=True, reply_markup=get_subscribe_inline())
+
+
+def get_subscribe_inline():
+    builder = InlineKeyboardBuilder()
+    subscribe_button = InlineKeyboardButton(text='Подписаться на ONE LIFE', url='https://t.me/oneliferust')
+    builder.add(subscribe_button)
+    return builder.as_markup()
+
+
